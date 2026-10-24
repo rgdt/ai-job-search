@@ -103,6 +103,19 @@ per-file diff commands.
   tells `/apply` to run the command from the output directory and to delete `build/` in
   its Step 5e cleanup. Stock templates are unchanged.
 
+### Security
+
+- **Portal CLIs move their direct `zod` dependency from `^3.23.0` to `^4.6.6`**
+  (`jobbank-search`, `jobdanmark-search`, `jobindex-search`, `jobnet-search`) - every
+  3.x release is inside GHSA-mrhx-c7xc-m3w5 (high: memory exhaustion while validating
+  oversized constrained collections, fixed in 4.6.6), and `bun audit` flagged it in all four
+  CLIs. `@bunli/core` 0.9.1 already requires zod 4, so the CLIs also stop loading two zod
+  majors for their own flag schemas. Flag validation behaves the same; only zod's error
+  wording changed (`expected number to be >=1`, `expected int`), and the flag-validation
+  tests now assert the new text. Residual: `@bunli/runtime`'s transitive `jimp` still pins
+  zod 3 and `file-type` 16 for image handling the CLIs never feed untrusted input; that
+  clears when bunli updates.
+
 ### Fixed
 
 - **`linkedin-search detail` no longer fetches an unrelated posting for a URL on another
