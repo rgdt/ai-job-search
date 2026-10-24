@@ -116,6 +116,13 @@ per-file diff commands.
   zod 3 and `file-type` 16 for image handling the CLIs never feed untrusted input; that
   clears when bunli updates.
 
+- **`bun run typecheck` passes again in the four bunli-based portal CLIs** - with no
+  committed lockfile, a fresh install now resolves `@bunli/runtime` -> `@opentui/core` ->
+  `jimp` -> `image-q`, which pins `@types/node@16.9.1`; that gets hoisted and satisfies
+  `bun-types`' `@types/node: "*"`, so `Response`, `Headers` and `URLSearchParams` lose their
+  fetch members and tsc fails on untouched `src/` code (red on `master` too). Each CLI now
+  declares `@types/node: ^24.0.0` as a devDependency, so the modern typings are the hoisted ones.
+
 ### Fixed
 
 - **`linkedin-search detail` no longer fetches an unrelated posting for a URL on another
